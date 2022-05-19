@@ -6,7 +6,6 @@ import {
     FormLabel,
     Heading,
     Text,
-    useBreakpointValue
 } from '@chakra-ui/react';
 import {FcGoogle} from 'react-icons/fc';
 
@@ -42,7 +41,7 @@ const Login = () => {
                 Continue with Google
             </Button>
         </VStack>
-    )
-}
+    );
+};
 
 export default Login;
