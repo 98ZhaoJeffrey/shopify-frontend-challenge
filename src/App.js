@@ -5,18 +5,26 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-} from "react-router-dom";
+} from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Chat from './pages/Chat';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
     <Center w='100vw' height='100vh'>
       <Router>
-        <Routes>
-          <Route path="/" element={<Login/>} />
-          <Route path="/chat" element={<Chat/>} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Login/>} />
+            <Route path="/chat" element={
+              <PrivateRoute>
+                  <Chat/>
+              </PrivateRoute>
+            }/>
+          </Routes>
+        </AuthProvider>
       </Router>
     </Center>
   );

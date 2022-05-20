@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import {
     VStack,
     Flex,
@@ -12,9 +12,10 @@ import {
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import NavItem from '../components/NavItem';
 import Message from '../components/Message';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Chat = () => {
-
+    const { logout } = useContext(AuthContext);
     const [messages, setMessages] = useState([{'message': 'hello world I am bot', 'sender': true}]);
     const inputRef = useRef(null);
     const messagesRef = useRef(null);
@@ -46,6 +47,12 @@ const Chat = () => {
                 <NavItem name='Chat Bot 2'/>
                 <NavItem name='Chat Bot 3'/> 
                 <NavItem name='Chat Bot 4'/> 
+                <Button 
+                    colorScheme='red'
+                    onClick={logout}
+                >
+                    Logout
+                </Button>
                 <IconButton
                     aria-label='Shrink Bar'
                     onClick={() => console.log('Shrink Bar')}
@@ -63,24 +70,24 @@ const Chat = () => {
                     })}
                 </VStack>
                 <InputGroup size='lg' w='full' mt='auto'>
-                        <Input
-                            ref={inputRef} 
-                            pr='16' 
-                            placeholder='Ask me anything'
-                            onKeyDown={(event) => {
-                                event.key === 'Enter' && sendMessage();
-                            }}
-                        />
-                        <InputRightElement width='16'>
-                            <Button 
-                                colorScheme='blue' 
-                                onClick={sendMessage}
-                            >
-                                Send
-                            </Button>
-                        </InputRightElement>
-                    </InputGroup>
-                </Flex>
+                    <Input
+                        ref={inputRef} 
+                        pr='16' 
+                        placeholder='Ask me anything'
+                        onKeyDown={(event) => {
+                            event.key === 'Enter' && sendMessage();
+                        }}
+                    />
+                    <InputRightElement width='16'>
+                        <Button 
+                            colorScheme='blue' 
+                            onClick={sendMessage}
+                        >
+                            Send
+                        </Button>
+                    </InputRightElement>
+                </InputGroup>
+            </Flex>
         </Flex>
     );
 };
