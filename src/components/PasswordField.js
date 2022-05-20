@@ -21,8 +21,8 @@ const PasswordField = forwardRef((props, ref) => {
                 <Input
                     type={showPassword ? 'text' : 'password'}
                     required 
-                    id='password'
                     ref={ref}
+                    id='password'
                 >
                 </Input>
                 <InputRightElement>

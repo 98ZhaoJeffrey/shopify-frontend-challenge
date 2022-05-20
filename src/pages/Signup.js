@@ -9,30 +9,19 @@ import {
     Text,
 } from '@chakra-ui/react';
 import { useNavigate, Link } from 'react-router-dom';
-import {FcGoogle} from 'react-icons/fc';
 import { AuthContext } from '../contexts/AuthContext';
 import PasswordField from '../components/PasswordField';
 
 const Login = () => {
     const navigate = useNavigate();
-    const { googleLogin, emailLogin } = useContext(AuthContext);
+    const { signup } = useContext(AuthContext);
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
     const [error, setError] = useState('');
 
-    const handleGoogleLogin = async () => {
+    const handleEmailSignup = async () => {
         try{
-            await googleLogin();
-            navigate('/chat');
-        }catch(error){
-            setError(error);
-        }
-    } 
-
-    const handleEmailLogin = async () => {
-        try{
-            console.log(emailRef.current.value)
-            await emailLogin(emailRef.current.value, passwordRef.current.value);
+            await signup(emailRef.current.value, passwordRef.current.value);
             navigate('/chat');
         }catch(error){
             setError(error.message)
@@ -49,25 +38,13 @@ const Login = () => {
             borderRadius={{ base: 'none', sm: 'xl' }}
         >
             <Heading as='h1' color='red'> <Text as='span' color='blue'>NBA</Text> Talks</Heading>
-            <Link to='/signup'><Text color='blue'>Need an account?</Text></Link>
             <FormControl>
                 <FormLabel htmlFor='email'>Email</FormLabel>
                 <Input ref={emailRef} id='email' type='email'></Input>
             </FormControl>
             <PasswordField ref={passwordRef} error={error}/>
-            <Link to='/reset'><Text color='blue'>Forgot your password?</Text></Link>
-            <Button colorScheme='blue' w='100%' onClick={handleEmailLogin}>Sigup</Button>
-            <Button                  
-                variant='outline' 
-                size='lg' 
-                fontSize='lg' 
-                w='100%' 
-                leftIcon={<FcGoogle />}
-                aria-label={'Google'}
-                onClick={handleGoogleLogin}
-            >
-                Continue with Google
-            </Button>
+            <Link to='/'><Text color='blue'>Have an account?</Text></Link>
+            <Button colorScheme='blue' w='100%' onClick={handleEmailSignup}>Login</Button>
         </VStack>
     );
 };
