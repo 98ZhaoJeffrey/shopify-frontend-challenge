@@ -7,7 +7,8 @@ import {
     signInWithPopup,
     signInWithEmailAndPassword,
     signOut,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail
  } from "firebase/auth";
 
 export const AuthContext = createContext(null);
@@ -40,13 +41,18 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         return signOut(auth);
     }
+
+    const resetPassword = (email) => {
+        return sendPasswordResetEmail(auth, email);
+    }
     
     const value = {
         currentUser,
         googleLogin,
         emailLogin,
         logout,
-        signup
+        signup,
+        resetPassword
     };
 
     return (

@@ -9,6 +9,7 @@ import {
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ResetPassword from './pages/ResetPassword';
 import Chat from './pages/Chat';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -20,6 +21,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login/>} />
             <Route path="/signup" element={<Signup/>} />
+            <Route path="/reset" element={<ResetPassword/>} />
             <Route path="/chat" element={
               <PrivateRoute>
                   <Chat/>
