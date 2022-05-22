@@ -3,13 +3,13 @@ import {
     VStack,
     Flex,
     Input,
-    IconButton,
     Text,
     InputGroup,
     InputRightElement,
-    Button
+    Button,
+    Center,
+    Box
 } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
 import NavItem from '../components/NavItem';
 import Message from '../components/Message';
 import { AuthContext } from '../contexts/AuthContext';
@@ -28,6 +28,7 @@ const Chat = () => {
     const [currentBot, setCurrentBot] = useState();
     const [botMessage, setBotMessage] = useState({});
     const [messages, setMessages] = useState([{'message': 'hello world I am bot', 'sender': true}]);
+    const [waiting, setWaiting] = useState(false);
     const inputRef = useRef(null);
     const messagesRef = useRef(null);
     
@@ -63,9 +64,43 @@ const Chat = () => {
                 limit(25)
             );
             const querySnapshot = await getDocs(q);
-            console.log(querySnapshot.docs.map((doc) => { return doc.data() }));
             setMessages(querySnapshot.docs.map((doc) => { return doc.data() }));
         }
+    }
+
+    const queryAI = async (prompt) => {
+        const engine = {
+            'Davinci': 'text-davinci-002',
+            'Curie':'text-curie-001',
+            'Babbage': 'text-babbage-001',
+            'Ada': 'text-ada-001'
+        };
+        const data = {
+            prompt: prompt,
+            temperature: 0.5,
+            max_tokens: 64,
+            top_p: 1.0,
+            frequency_penalty: 0.0,
+            presence_penalty: 0.0,
+        };
+        try{
+            setWaiting(true);
+            console.log(engine[currentBot]);
+            console.log(`https://api.openai.com/v1/engines/${engine[currentBot]}/completions`)
+            const response = await fetch(`https://api.openai.com/v1/engines/${engine[currentBot]}/completions`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.REACT_APP_OPEN_AI_SECRET}`,
+                },
+                body: JSON.stringify(data),
+            });
+            setWaiting(false);
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }  
     }
 
     useEffect(() => {
@@ -73,18 +108,34 @@ const Chat = () => {
     }, [currentBot, botMessage])
 
     useEffect(() => {
-        messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+        if(messagesRef.current){
+            messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+        } 
     }, [messages]);
 
     const sendMessage = async () => {
         if(inputRef.current.value){
-            await addDoc(collection(botMessage[currentBot], 'messages'), {
-                'message': inputRef.current.value,
-                'createdAt': Date.now(),
-                'userSent': true
-            });
-            await updateMessages();
-            inputRef.current.value = '';
+            try{
+                console.log(botMessage[currentBot]);
+                await addDoc(collection(botMessage[currentBot], 'messages'), {
+                    'message': inputRef.current.value,
+                    'createdAt': Date.now(),
+                    'userSent': true
+                });
+                await updateMessages();
+                const response = await queryAI(inputRef.current.value);
+                const result = await response.json();
+                await addDoc(collection(botMessage[currentBot], 'messages'), {
+                    'message': result['choices'][0]['text'],
+                    'createdAt': Date.now(),
+                    'userSent': false
+                });
+                await updateMessages();
+                inputRef.current.value = ''; 
+            }
+            catch(error){
+                console.log(error);
+            }
         }
     };
 
@@ -92,63 +143,72 @@ const Chat = () => {
         <Flex w='100%' h='100%' flexDirection='row'>
             <Flex 
                 h='100%'
-                w='20%'
+                w={{'base': '25%', 'lg': '20%'}}
                 as='nav'
                 flexDirection='column'
                 bg='gray.100'
-                gap='2'
-                overflow='auto'
-            >   
-                <Text fontSize='2xl' ml='2' color='black' fontWeight='semibold'>NBA Talks</Text>
-                {botMessage && Object.keys(botMessage).map((name) => {
-                    return (
-                        <NavItem 
-                            name={name} 
-                            setCurrentBot={setCurrentBot}
-                        />
-                    )
-                })}
+            >
+                <Flex 
+                    flexDirection='column'
+                    gap='2'
+                    overflow='auto'
+                    alignItems={{'base' : 'center', 'md': 'start'}}
+                >   
+                    <Text fontSize='2xl' ml='2' color='black' fontWeight='semibold'>Chat</Text>
+                    {botMessage && Object.keys(botMessage).map((name) => {
+                        return (
+                            <NavItem 
+                                name={name} 
+                                setCurrentBot={setCurrentBot}
+                            />
+                        )
+                    })}
+                </Flex>
                 <Button 
                     colorScheme='red'
                     onClick={logout}
+                    w='100%'
+                    mt='auto'
                 >
                     Logout
                 </Button>
-                <IconButton
-                    aria-label='Shrink Bar'
-                    onClick={() => console.log('Shrink Bar')}
-                    icon={<ArrowLeftIcon/>}
-                    w='4'
-                    mr='4'
-                    alignSelf='end'
-                    mt='auto'
-                />
             </Flex>
-            <Flex w='100%' h='100%' flexDirection='column' >
-                <VStack overflow='auto' ref={messagesRef}>
-                    {messages && messages.map((message, id) => { 
-                        return <Message id={id} message={message.message} sender={message.userSent}/>
-                    })}
-                </VStack>
-                <InputGroup size='lg' w='full' mt='auto'>
-                    <Input
-                        ref={inputRef} 
-                        pr='16' 
-                        placeholder='Ask me anything'
-                        onKeyDown={(event) => {
-                            event.key === 'Enter' && sendMessage();
-                        }}
-                    />
-                    <InputRightElement width='16'>
-                        <Button 
-                            colorScheme='blue' 
-                            onClick={sendMessage}
-                        >
-                            Send
-                        </Button>
-                    </InputRightElement>
-                </InputGroup>
-            </Flex>
+            { currentBot === undefined ? <Center w='100%'>
+                    <Text fontSize={{'base' : 'xl', 'md': '2xl'}}>Click on one of the bots to see your messages</Text>
+                </Center> 
+                 : <Flex w='100%' h='100%' flexDirection='column' >
+                    <Box             
+                        boxShadow='md'
+                    >
+                        <Text fontSize='2xl'>{currentBot}</Text>
+                    </Box>
+                    <VStack overflow='auto' ref={messagesRef}>
+                        {messages && messages.map((message, id) => { 
+                            return <Message id={id} message={message.message} sender={message.userSent}/>
+                        })}
+                    </VStack>
+                    {waiting && <Text color='blue' mx='6' mb='2'>{currentBot} is thinking...</Text>}
+                    <InputGroup size='lg' w='full' mt='auto'>
+                        <Input
+                            ref={inputRef} 
+                            pr='16' 
+                            placeholder='Ask me anything'
+                            onKeyDown={(event) => {
+                                event.key === 'Enter' && sendMessage();
+                            }}
+                            isDisabled={waiting}
+                        />
+                        <InputRightElement width='16'>
+                            <Button 
+                                colorScheme='blue' 
+                                onClick={sendMessage}
+                                isDisabled={waiting}
+                            >
+                                Send
+                            </Button>
+                        </InputRightElement>
+                    </InputGroup>
+                </Flex>}
         </Flex>
     );
 };

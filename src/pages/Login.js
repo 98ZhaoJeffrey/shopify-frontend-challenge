@@ -49,6 +49,7 @@ const Login = () => {
             boxShadow={{ base: 'none', sm: 'md'}}
             borderRadius={{ base: 'none', sm: 'xl' }}
         >
+            
             <Heading as='h1' color='red'> <Text as='span' color='blue'>NBA</Text> Talks</Heading>
             <Link to='/signup'><Text color='blue'>Need an account?</Text></Link>
             <FormControl>
