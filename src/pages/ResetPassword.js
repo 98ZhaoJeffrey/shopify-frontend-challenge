@@ -8,8 +8,7 @@ import {
     Heading,
     FormErrorMessage,
     Box,
-    useToast,
-    Text
+    useToast
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
