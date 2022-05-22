@@ -26,7 +26,7 @@ const Message = (props) => {
             >
                 <Text>{props.message}</Text>
             </Box>
-            <Avatar size='sm' name={props.name} src=''/>
+            <Avatar size='sm' description={`${props.name} profile picture`}/>
         </Flex>
     )
 }

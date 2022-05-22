@@ -30,7 +30,7 @@ const Login = () => {
     
     return(
         <VStack 
-            width='30%' 
+            width={{base: '90%', md: '70%', lg:'40%', xl: '30%'}} 
             spacing={8}
             py={{ base: '0', sm: '8' }}
             px={{ base: '4', sm: '10' }}
@@ -43,7 +43,7 @@ const Login = () => {
                 <Input ref={emailRef} id='email' type='email'></Input>
             </FormControl>
             <PasswordField ref={passwordRef} error={error}/>
-            <Link to='/'><Text color='blue'>Have an account?</Text></Link>
+            <Button variant='link'><Link to='/'>Have an account?</Link></Button>
             <Button colorScheme='blue' w='100%' onClick={handleEmailSignup}>Signup</Button>
         </VStack>
     );

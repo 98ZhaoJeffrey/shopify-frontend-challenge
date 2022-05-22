@@ -42,8 +42,9 @@ const Login = () => {
     
     return(
         <VStack 
-            width='30%' 
-            spacing={8}
+            h='auto'
+            width={{base: '90%', md: '70%', lg:'40%', xl: '35%'}} 
+            spacing={4}
             py={{ base: '0', sm: '8' }}
             px={{ base: '4', sm: '10' }}
             boxShadow={{ base: 'none', sm: 'md'}}
@@ -51,13 +52,14 @@ const Login = () => {
         >
             
             <Heading as='h1' color='red'> <Text as='span' color='blue'>NBA</Text> Talks</Heading>
-            <Link to='/signup'><Text color='blue'>Need an account?</Text></Link>
+            <Text>The objective way to rate your NBA take again</Text>
+            <Button variant='link'><Link to='/signup'>Need an account?</Link></Button>
             <FormControl>
                 <FormLabel htmlFor='email'>Email</FormLabel>
                 <Input ref={emailRef} id='email' type='email'></Input>
             </FormControl>
             <PasswordField ref={passwordRef} error={error}/>
-            <Link to='/reset'><Text color='blue'>Forgot your password?</Text></Link>
+            <Button variant='link'><Link to='/reset'>Forgot your password?</Link></Button>
             <Button colorScheme='blue' w='100%' onClick={handleEmailLogin}>Login</Button>
             <Button                  
                 variant='outline' 
@@ -71,6 +73,7 @@ const Login = () => {
                 Continue with Google
             </Button>
         </VStack>
+        
     );
 };
 

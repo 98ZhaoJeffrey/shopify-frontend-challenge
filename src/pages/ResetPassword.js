@@ -8,7 +8,8 @@ import {
     Heading,
     FormErrorMessage,
     Box,
-    useToast,Text
+    useToast,
+    Text
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
@@ -43,7 +44,7 @@ const ResetPassword = () => {
     return (
         <VStack
         textAlign='center' 
-            w='50%'
+            w={{base: '70%', lg: 'lg'}}
             h='100%'
             spacing={8}
             py={{ base: '0', sm: '8' }}
@@ -73,7 +74,7 @@ const ResetPassword = () => {
                 > 
                     Send reset link 
                 </Button>
-                <Link to='/'><Text color='blue'>Back to login</Text></Link>
+                <Button variant='link'><Link to='/'>Back to login</Link></Button>
             </Box>
         </VStack>
 
