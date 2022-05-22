@@ -32,8 +32,9 @@ const Login = () => {
     const handleEmailLogin = async () => {
         try{
             console.log(emailRef.current.value)
-            await emailLogin(emailRef.current.value, passwordRef.current.value);
-            navigate('/chat');
+            const result = await emailLogin(emailRef.current.value, passwordRef.current.value);
+            console.log(result);
+            //navigate('/chat');
         }catch(error){
             setError(error.message)
         }
@@ -56,7 +57,7 @@ const Login = () => {
             </FormControl>
             <PasswordField ref={passwordRef} error={error}/>
             <Link to='/reset'><Text color='blue'>Forgot your password?</Text></Link>
-            <Button colorScheme='blue' w='100%' onClick={handleEmailLogin}>Sigup</Button>
+            <Button colorScheme='blue' w='100%' onClick={handleEmailLogin}>Login</Button>
             <Button                  
                 variant='outline' 
                 size='lg' 

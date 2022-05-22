@@ -44,7 +44,7 @@ const Login = () => {
             </FormControl>
             <PasswordField ref={passwordRef} error={error}/>
             <Link to='/'><Text color='blue'>Have an account?</Text></Link>
-            <Button colorScheme='blue' w='100%' onClick={handleEmailSignup}>Login</Button>
+            <Button colorScheme='blue' w='100%' onClick={handleEmailSignup}>Signup</Button>
         </VStack>
     );
 };

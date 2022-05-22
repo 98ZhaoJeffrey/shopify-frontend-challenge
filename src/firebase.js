@@ -12,7 +12,7 @@ const firebaseConfig = {
   storageBucket: "shopify-frontend-challen-1f29d.appspot.com",
   messagingSenderId: "83085750564",
   appId: "1:83085750564:web:4af9a389d8b439cae443b1",
-  measurementId: "G-WG5W7WH69C"
+  measurementId: "G-WG5W7WH69C",
 };
 
 // Initialize Firebase
